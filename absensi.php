@@ -236,15 +236,25 @@ $is_on_time = ($current_time >= $start_time && $current_time <= $late_time);
                 <?php endif; ?>
                 <form method="POST" action="" class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <select name="siswa_id" class="form-select w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-indigo-500" required>
-                            <option value="">Pilih Siswa</option>
-                            <?php
-                            $siswa_result = $conn->query("SELECT * FROM data_siswa");
-                            while ($row = $siswa_result->fetch_assoc()):
-                                echo "<option value='" . $row['id'] . "'>" . $row['nama'] . "</option>";
-                            endwhile;
-                            ?>
-                        </select>
+                        <select name="siswa_id" class="form-select w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 
+    focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 
+    cursor-pointer bg-white dark:bg-gray-700 shadow-sm 
+    transition-all duration-200 ease-in-out
+    hover:border-indigo-400
+    appearance-none
+    bg-no-repeat bg-right
+    pr-8
+    hover:scale-[1.01]"
+    style="background-image: url('data:image/svg+xml;charset=US-ASCII,<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>')"
+    required>
+    <option value="" class="py-2">Pilih Siswa</option>
+    <?php
+    $siswa_result = $conn->query("SELECT * FROM data_siswa");
+    while ($row = $siswa_result->fetch_assoc()):
+        echo "<option value='" . $row['id'] . "' class='py-2'>" . $row['nama'] . "</option>";
+    endwhile;
+    ?>
+</select>
                         <select name="status" class="form-select w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-indigo-500" required>
                             <option value="">Pilih Status</option>
                             <option value="Hadir">Hadir</option>

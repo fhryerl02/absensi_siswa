@@ -503,72 +503,7 @@ $jurusan_result = $conn->query("SELECT DISTINCT jurusan FROM data_siswa");
         </div>
     </main>
 
-    <!-- Modal untuk menampilkan biodata siswa -->
-    <div id="biodataModal" class="modal">
-        <div class="modal-content bg-white rounded-xl shadow-2xl p-8">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-3xl font-bold text-gray-900">Biodata Siswa</h2>
-                <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-            <div id="biodataContent" class="space-y-6"></div>
-        </div>
-    </div>
-
     <script>
-        // Only keep modal related JavaScript
-        function openModal(id) {
-            fetch(`get_siswa.php?id=${id}`)
-                .then(response => response.json())
-                .then(data => {
-                    const biodataContent = `
-                        <div class="bg-gray-50 rounded-lg p-6">
-                            <div class="flex flex-col md:flex-row items-center gap-8">
-                                <div class="relative">
-                                    <img src="uploads/${data.foto}" alt="Foto ${data.nama}" 
-                                         class="w-48 h-48 rounded-lg object-cover shadow-lg border-4 border-indigo-600">
-                                    <div class="absolute -bottom-3 -right-3 bg-indigo-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
-                                        ID: ${data.id}
-                                    </div>
-                                </div>
-                                <div class="flex-1 space-y-4">
-                                    <div class="space-y-2">
-                                        <h3 class="text-gray-500 text-sm font-medium">Nama Lengkap</h3>
-                                        <p class="text-2xl font-bold text-gray-900">${data.nama}</p>
-                                    </div>
-                                    <div class="grid grid-cols-2 gap-4">
-                                        <div class="space-y-2">
-                                            <h3 class="text-gray-500 text-sm font-medium">Kelas</h3>
-                                            <p class="text-xl font-semibold text-gray-900">${data.kelas}</p>
-                                        </div>
-                                        <div class="space-y-2">
-                                            <h3 class="text-gray-500 text-sm font-medium">Jurusan</h3>
-                                            <p class="text-xl font-semibold text-gray-900">${data.jurusan}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    document.getElementById('biodataContent').innerHTML = biodataContent;
-                    document.getElementById('biodataModal').style.display = 'block';
-                });
-        }
-
-        function closeModal() {
-            document.getElementById('biodataModal').style.display = 'none';
-        }
-
-        window.onclick = function(event) {
-            const modal = document.getElementById('biodataModal');
-            if (event.target === modal) {
-                closeModal();
-            }
-        }
-
         const darkModeToggle = document.getElementById('darkModeToggle');
         const darkIcon = document.getElementById('darkIcon');
         const lightIcon = document.getElementById('lightIcon');
@@ -593,7 +528,6 @@ $jurusan_result = $conn->query("SELECT DISTINCT jurusan FROM data_siswa");
             lightIcon.classList.remove('hidden');
         }
 
-        // Add event listener
         darkModeToggle.addEventListener('click', toggleDarkMode);
     </script>
 </body>

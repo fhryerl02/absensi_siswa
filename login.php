@@ -67,43 +67,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Login - Absensi Sekolah</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom animasi untuk container login */
+        .animate-fadeInDown {
+            animation: fadeInDown 1s;
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        /* Animasi khusus untuk dropdown */
+        .animate-dropdown {
+            transition: transform 0.3s ease-in-out;
+        }
+        .animate-dropdown:focus {
+            transform: scale(1.05);
+        }
+    </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+    <div class="bg-white p-8 rounded-lg shadow-md max-w-md w-full animate-fadeInDown">
+        <h2 class="text-xl text-center text-gray-800 font-bold mb-2">Selamat datang di Absensi Sekolah</h2>
         <h1 class="text-2xl font-bold text-center mb-6">Login</h1>
 
         <?php if (isset($error)): ?>
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-                <span class="block sm:inline"><?php echo $error; ?></span>
+                <?php echo $error; ?>
             </div>
         <?php endif; ?>
 
         <form method="POST" action="" class="space-y-4">
-            <div class="mb-4">
+            <div>
                 <label for="role" class="block text-sm font-medium text-gray-700">Login Sebagai</label>
-                <select name="role" id="role" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                <select name="role" id="role" class="animate-dropdown mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
                     <option value="admin">Admin</option>
                     <option value="siswa">Siswa</option>
                 </select>
             </div>
 
-            <div class="mb-4">
+            <div>
                 <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-                <input type="text" name="username" id="username" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                <input type="text" name="username" id="username" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" required>
             </div>
 
-            <div class="mb-6">
+            <div>
                 <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                <input type="password" name="password" id="password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                <input type="password" name="password" id="password" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" required>
             </div>
 
-            <button type="submit" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 Login
             </button>
 
-            <div class="mt-4 text-center">
+            <div class="mt-3 text-center">
                 <a href="dashboard.php?role=tamu" class="text-indigo-600 hover:text-indigo-700">Login as Guest</a>
             </div>
         </form>
