@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once 'notification.php';
 
 // Set zona waktu
 date_default_timezone_set('Asia/Jakarta'); // Ganti dengan zona waktu yang sesuai
@@ -36,7 +37,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_absensi'])) {
 
         $stmt = $conn->prepare("INSERT INTO absen_siswa (siswa_id, status) VALUES (?, ?)");
         $stmt->bind_param("is", $siswa_id, $status);
-        $stmt->execute();
+        if ($stmt->execute()) {
+            $_SESSION['notification'] = "Absensi berhasil ditambahkan!";
+            $_SESSION['notification_type'] = "success";
+        } else {
+            $_SESSION['notification'] = "Gagal menambahkan absensi!";
+            $_SESSION['notification_type'] = "error";
+        }
         $stmt->close();
     } else {
         header("Location: absensi.php?error=1");
@@ -52,7 +59,13 @@ if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
     $stmt = $conn->prepare("DELETE FROM absen_siswa WHERE id = ?");
     $stmt->bind_param("i", $id);
-    $stmt->execute();
+    if ($stmt->execute()) {
+        $_SESSION['notification'] = "Absensi berhasil dihapus!";
+        $_SESSION['notification_type'] = "success";
+    } else {
+        $_SESSION['notification'] = "Gagal menghapus absensi!";
+        $_SESSION['notification_type'] = "error";
+    }
     $stmt->close();
 
     // Reset auto-increment jika tidak ada data lagi
@@ -82,6 +95,12 @@ $late_time = '07:00:00';
 $end_time = '23:30:00';
 $is_absensi_active = ($current_time >= $start_time && $current_time <= $end_time);
 $is_on_time = ($current_time >= $start_time && $current_time <= $late_time);
+
+if (isset($_SESSION['notification'])) {
+    show_notification($_SESSION['notification'], $_SESSION['notification_type']);
+    unset($_SESSION['notification']);
+    unset($_SESSION['notification_type']);
+}
 ?>
 
 <!DOCTYPE html>
@@ -245,7 +264,7 @@ $is_on_time = ($current_time >= $start_time && $current_time <= $late_time);
     bg-no-repeat bg-right
     pr-8
     hover:scale-[1.01]"
-    style="background-image: url('data:image/svg+xml;charset=US-ASCII,<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>')"
+    style="background-image: url('data:image/svg+xml;charset=US-ASCII,<svg width=\'24\' height=\'24\' xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'currentColor\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'/></svg>')"
     required>
     <option value="" class="py-2">Pilih Siswa</option>
     <?php

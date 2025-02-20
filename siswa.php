@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once 'notification.php';
 
 // Periksa apakah pengguna adalah admin
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
@@ -63,7 +64,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_siswa'])) {
 
     $stmt = $conn->prepare("INSERT INTO data_siswa (nama, kelas, jurusan, foto) VALUES (?, ?, ?, ?)");
     $stmt->bind_param("ssss", $nama, $kelas, $jurusan, $foto);
-    $stmt->execute();
+    if ($stmt->execute()) {
+        $_SESSION['notification'] = "Data siswa berhasil ditambahkan!";
+        $_SESSION['notification_type'] = "success";
+    } else {
+        $_SESSION['notification'] = "Gagal menambahkan data siswa!";
+        $_SESSION['notification_type'] = "error";
+    }
     $stmt->close();
 
     // Redirect untuk menghindari duplikasi data saat refresh
@@ -116,7 +123,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_siswa'])) {
 
     $stmt = $conn->prepare("UPDATE data_siswa SET nama = ?, kelas = ?, jurusan = ?, foto = ? WHERE id = ?");
     $stmt->bind_param("ssssi", $nama, $kelas, $jurusan, $foto, $id);
-    $stmt->execute();
+    if ($stmt->execute()) {
+        $_SESSION['notification'] = "Data siswa berhasil diperbarui!";
+        $_SESSION['notification_type'] = "success";
+    } else {
+        $_SESSION['notification'] = "Gagal memperbarui data siswa!";
+        $_SESSION['notification_type'] = "error";
+    }
     $stmt->close();
 
     // Redirect untuk menghindari duplikasi data saat refresh
@@ -189,6 +202,12 @@ $result = $conn->query($query);
 // Ambil daftar kelas dan jurusan untuk slide bar
 $kelas_result = $conn->query("SELECT DISTINCT kelas FROM data_siswa");
 $jurusan_result = $conn->query("SELECT DISTINCT jurusan FROM data_siswa");
+
+if (isset($_SESSION['notification'])) {
+    show_notification($_SESSION['notification'], $_SESSION['notification_type']);
+    unset($_SESSION['notification']);
+    unset($_SESSION['notification_type']);
+}
 ?>
 
 <!DOCTYPE html>
