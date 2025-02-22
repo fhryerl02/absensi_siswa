@@ -153,6 +153,14 @@ foreach ($statuses as $status) {
                                     Absensi Siswa
                                 </a>
                             </li>
+                            <li>
+                                <a href="jadwal_pelajaran.php" class="flex items-center px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    Jadwal Pelajaran
+                                </a>
+                            </li>
                             
                         <?php elseif ($role === 'tamu'): ?>
                             <!-- Menu Tamu -->
