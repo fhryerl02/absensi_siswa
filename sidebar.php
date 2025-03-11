@@ -1,65 +1,221 @@
-<aside class="w-64 bg-indigo-700 text-white min-h-screen fixed">
+<?php
+if (!isset($role)) {
+    $role = isset($_SESSION['role']) ? $_SESSION['role'] : '';
+}
+?>
+
+<style>
+    .sidebar {
+        transition: width 0.3s ease;
+    }
+    
+    .sidebar.collapsed {
+        width: 5rem;
+    }
+    
+    .sidebar.collapsed .menu-text {
+        display: none;
+    }
+    
+    .sidebar.collapsed .sidebar-header span {
+        display: none;
+    }
+
+    .main-content {
+        transition: margin-left 0.3s ease;
+    }
+
+    .main-content.expanded {
+        margin-left: 5rem;
+    }
+
+    .menu-item:hover .tooltip {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .tooltip {
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar-logo {
+        width: 40px;
+        height: 40px;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar.collapsed .sidebar-logo {
+        width: 30px;
+        height: 30px;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 1rem;
+        right: -12px;
+        background: #4F46E5;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        z-index: 60;
+    }
+
+    .close-btn:hover {
+        background: #4338CA;
+        transform: scale(1.1);
+    }
+
+    .sidebar.collapsed .close-btn {
+        transform: rotate(180deg);
+    }
+
+    .sidebar.collapsed .close-btn:hover {
+        transform: rotate(180deg) scale(1.1);
+    }
+</style>
+
+<aside id="sidebar" class="sidebar w-64 bg-indigo-700 text-white min-h-screen fixed top-0 left-0 z-50">
+    <!-- Add close button -->
+    <div class="close-btn" id="sidebarClose">
+        <i class="fas fa-chevron-left text-white text-sm"></i>
+    </div>
+
     <div class="p-6">
-        <h1 class="text-2xl font-bold mb-6">Panel Admin</h1>
+        <!-- Updated Sidebar Header with Logo -->
+        <div class="sidebar-header flex items-center justify-between mb-6">
+            <div class="flex items-center space-x-3">
+                <!-- Logo -->
+                <div class="sidebar-logo">
+                    <svg class="w-full h-full" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="flex flex-col">
+                    <h1 class="text-2xl font-bold flex items-center">
+                        <span>SIAB</span>
+                    </h1>
+                    <span class="text-xs text-indigo-200"><?php echo ucfirst($role); ?></span>
+                </div>
+            </div>
+        </div>
+
         <nav>
             <ul class="space-y-4">
-                <li>
-                    <a href="dashboard.php" class="flex items-center px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0l-2-2m2 2V4a1 1 0 011-1h3m-3 4l2-2" />
-                        </svg>
+                <!-- Dashboard -->
+                <li class="menu-item relative">
+                    <a href="dashboard.php" 
+                       class="flex items-center px-4 py-3 bg-indigo-600 rounded-lg hover:bg-indigo-500 
+                              transition-all duration-200 group">
+                        <i class="fas fa-home text-xl mr-3 group-hover:scale-110 transition-transform"></i>
+                        <span class="menu-text">Dashboard</span>
+                    </a>
+                    <div class="tooltip absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm 
+                                rounded-md whitespace-nowrap opacity-0">
                         Dashboard
-                    </a>
+                    </div>
                 </li>
-                <li>
-                    <a href="siswa.php" class="flex items-center px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
+
+                <?php if ($role === 'admin'): ?>
+                <!-- Data Siswa -->
+                <li class="menu-item relative">
+                    <a href="siswa.php" 
+                       class="flex items-center px-4 py-3 bg-indigo-600 rounded-lg hover:bg-indigo-500 
+                              transition-all duration-200 group">
+                        <i class="fas fa-user-graduate text-xl mr-3 group-hover:scale-110 transition-transform"></i>
+                        <span class="menu-text">Data Siswa</span>
+                    </a>
+                    <div class="tooltip absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm 
+                                rounded-md whitespace-nowrap opacity-0">
                         Data Siswa
-                    </a>
+                    </div>
                 </li>
-                <li>
-                    <a href="absensi.php" class="flex items-center px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
+
+                <!-- Absensi Siswa -->
+                <li class="menu-item relative">
+                    <a href="absensi.php" 
+                       class="flex items-center px-4 py-3 bg-indigo-600 rounded-lg hover:bg-indigo-500 
+                              transition-all duration-200 group">
+                        <i class="fas fa-clipboard-check text-xl mr-3 group-hover:scale-110 transition-transform"></i>
+                        <span class="menu-text">Absensi Siswa</span>
+                    </a>
+                    <div class="tooltip absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm 
+                                rounded-md whitespace-nowrap opacity-0">
                         Absensi Siswa
-                    </a>
+                    </div>
                 </li>
-                <li>
-                    <a href="jadwal_pelajaran.php" class="flex items-center px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                        </svg>
+
+                <!-- Jadwal Pelajaran -->
+                <li class="menu-item relative">
+                    <a href="jadwal_pelajaran.php" 
+                       class="flex items-center px-4 py-3 bg-indigo-600 rounded-lg hover:bg-indigo-500 
+                              transition-all duration-200 group">
+                        <i class="fas fa-calendar-alt text-xl mr-3 group-hover:scale-110 transition-transform"></i>
+                        <span class="menu-text">Jadwal Pelajaran</span>
+                    </a>
+                    <div class="tooltip absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm 
+                                rounded-md whitespace-nowrap opacity-0">
                         Jadwal Pelajaran
-                    </a>
+                    </div>
                 </li>
-                <li>
-                    <a href="absen.php" class="flex items-center px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
-                        Absensi Guru
+                <?php endif; ?>
+
+                <!-- Logout -->
+                <li class="menu-item relative mt-auto">
+                    <a href="logout.php" 
+                       class="flex items-center px-4 py-3 bg-red-600 rounded-lg hover:bg-red-500 
+                              transition-all duration-200 group">
+                        <i class="fas fa-sign-out-alt text-xl mr-3 group-hover:scale-110 transition-transform"></i>
+                        <span class="menu-text">Logout</span>
                     </a>
-                </li>
-                <li>
-                    <a href="guru.php" class="flex items-center px-4 py-2 bg-indigo-600 rounded-md hover:bg-indigo-500 transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                        Data Guru
-                    </a>
-                </li>
-                <li>
-                    <a href="logout.php" class="flex items-center px-4 py-2 bg-red-600 rounded-md hover:bg-red-500 transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                        </svg>
+                    <div class="tooltip absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-sm 
+                                rounded-md whitespace-nowrap opacity-0">
                         Logout
-                    </a>
+                    </div>
                 </li>
             </ul>
         </nav>
     </div>
 </aside>
+
+<!-- Add this script at the bottom of your sidebar.php -->
+<script>
+    const sidebar = document.getElementById('sidebar');
+    const sidebarClose = document.getElementById('sidebarClose');
+    const mainContent = document.querySelector('.main-content');
+    let isSidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+
+    function toggleSidebar() {
+        isSidebarCollapsed = !isSidebarCollapsed;
+        sidebar.classList.toggle('collapsed', isSidebarCollapsed);
+        mainContent.classList.toggle('expanded', isSidebarCollapsed);
+        localStorage.setItem('sidebarCollapsed', isSidebarCollapsed);
+    }
+
+    // Initialize sidebar state
+    if (isSidebarCollapsed) {
+        sidebar.classList.add('collapsed');
+        mainContent.classList.add('expanded');
+    }
+
+    // Use the close button instead of sidebarToggle
+    sidebarClose.addEventListener('click', toggleSidebar);
+
+    // Add sticky behavior
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 0) {
+            sidebar.classList.add('shadow-xl');
+        } else {
+            sidebar.classList.remove('shadow-xl');
+        }
+    });
+</script>

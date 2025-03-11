@@ -165,66 +165,225 @@ if (isset($_SESSION['notification'])) {
         }
     </script>
     <style>
+        /* Base Transitions */
         * {
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: all 0.3s ease;
         }
-        
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c7d2fe;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #818cf8;
+        }
+
+        /* Card Animations */
+        .card-hover {
+            transform: translateY(0);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Status Badges */
+        .status-badge {
+            @apply px-3 py-1 rounded-full text-sm font-medium;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .status-hadir { @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200; }
+        .status-sakit { @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200; }
+        .status-terlambat { @apply bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200; }
+        .status-alpha { @apply bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200; }
+
+        /* Enhanced Form Elements */
+        .form-select {
+            background-image: url("data:image/svg+xml,...");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+
+        .form-select:focus {
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+            border-color: #6366f1;
+        }
+
+        /* Table Enhancements */
+        .table-row {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .table-row::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #6366f1, transparent);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .table-row:hover::after {
+            transform: scaleX(1);
+        }
+
+        /* Action Buttons */
+        .btn-action {
+            @apply inline-flex items-center px-3 py-2 border border-transparent 
+                   text-sm font-medium rounded-md transition-all duration-200
+                   focus:outline-none focus:ring-2 focus:ring-offset-2;
+        }
+
+        .btn-delete {
+            @apply text-red-700 bg-red-100 hover:bg-red-200 
+                   focus:ring-red-500 hover:shadow-md;
+        }
+
+        /* Loading Animation */
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        .loading {
+            animation: shimmer 2s infinite linear;
+            background: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+            background-size: 1000px 100%;
+        }
+
+        /* Modal Animation */
+        .modal-enter {
+            animation: modalEnter 0.3s ease-out;
+        }
+
+        @keyframes modalEnter {
+            from { 
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to { 
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Dark Mode Enhancements */
         .dark body {
-            background-color: #1a202c;
-            color: #e2e8f0;
+            background-color: #111827;
         }
-        
+
         .dark .bg-white {
-            background-color: #2d3748 !important;
-            color: #e2e8f0 !important;
+            background-color: #1F2937;
         }
-        
-        .dark .bg-gray-50 {
-            background-color: #374151 !important;
+
+        .dark .text-gray-800 {
+            color: #F3F4F6;
         }
-        
-        .dark .bg-gray-100 {
-            background-color: #1f2937 !important;
+
+        .dark .border-gray-200 {
+            border-color: #374151;
         }
-        
-        .dark .text-gray-500 {
-            color: #9ca3af !important;
-        }
-        
-        .dark table thead {
-            background-color: #374151 !important;
-        }
-        
-        .dark table tbody {
-            background-color: #2d3748 !important;
-        }
-        
+
         .dark .form-select {
-            background-color: #2d3748;
-            color: #e2e8f0;
-            border-color: #4a5568;
+            background-color: #374151;
+            color: #F3F4F6;
+            border-color: #4B5563;
         }
-        
+
         .dark .form-select option {
-            background-color: #2d3748;
-            color: #e2e8f0;
+            background-color: #374151;
+            color: #F3F4F6;
         }
-        
-        .dark table td {
-            color: #e2e8f0 !important;
+
+        /* Enhanced Card Styling */
+        .card {
+            @apply bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-all duration-300;
         }
-        
-        .dark .shadow-md {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+
+        .card:hover {
+            @apply transform -translate-y-1 shadow-xl;
         }
-        
-        /* Soft design tweaks */
-        button, select {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+        /* Enhanced Table Styling */
+        .table-container {
+            @apply overflow-hidden bg-white dark:bg-gray-800 rounded-xl shadow-lg;
         }
-        button:hover, select:hover {
-            transform: scale(1.02);
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2);
+
+        .table-header {
+            @apply bg-gray-50 dark:bg-gray-700 px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider;
+        }
+
+        .table-cell {
+            @apply px-6 py-4 whitespace-nowrap text-gray-800 dark:text-gray-300;
+        }
+
+        /* Status Badge Enhancements */
+        .status-badge {
+            @apply px-3 py-1 rounded-full text-sm font-medium inline-flex items-center space-x-1;
+        }
+
+        .status-hadir {
+            @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200;
+        }
+
+        .status-sakit {
+            @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200;
+        }
+
+        .status-terlambat {
+            @apply bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200;
+        }
+
+        .status-alpha {
+            @apply bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200;
+        }
+
+        /* Form Input Enhancements */
+        .form-input {
+            @apply w-full rounded-lg border-gray-300 dark:border-gray-600 
+                   dark:bg-gray-700 dark:text-gray-300 focus:border-indigo-500 
+                   focus:ring-2 focus:ring-indigo-500 dark:focus:border-indigo-600;
+        }
+
+        /* Button Enhancements */
+        .btn-primary {
+            @apply px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 
+                   dark:bg-indigo-500 dark:hover:bg-indigo-600 transition-all duration-200
+                   focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500;
+        }
+
+        .btn-danger {
+            @apply px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 
+                   dark:bg-red-500 dark:hover:bg-red-600 transition-all duration-200
+                   focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500;
+        }
+
+        /* Search Input Enhancement */
+        .search-input {
+            @apply pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg
+                   focus:ring-2 focus:ring-indigo-500 focus:border-transparent
+                   dark:bg-gray-700 dark:text-gray-300;
         }
     </style>
 </head>
@@ -253,51 +412,84 @@ if (isset($_SESSION['notification'])) {
 
         <!-- Form tambah absensi -->
         <?php if ($is_absensi_active): ?>
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
-                <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Tambah Absensi</h2>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6 card-hover">
+                <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white flex items-center">
+                    <i class="fas fa-user-check mr-2 text-indigo-500"></i>
+                    Tambah Absensi
+                </h2>
                 <?php if (!$is_on_time): ?>
                     <div class="bg-yellow-100 dark:bg-yellow-800 text-yellow-700 dark:text-yellow-100 p-4 rounded-lg mb-4">
                         <p>Waktu sudah lewat jam 07:00. Status "Hadir" akan otomatis tercatat sebagai "Terlambat".</p>
                     </div>
                 <?php endif; ?>
-                <form method="POST" action="" class="space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <select name="siswa_id" class="form-select w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 
-    focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 
-    cursor-pointer bg-white dark:bg-gray-700 shadow-sm 
-    transition-all duration-200 ease-in-out
-    hover:border-indigo-400
-    appearance-none
-    bg-no-repeat bg-right
-    pr-8
-    hover:scale-[1.01]"
-    style="background-image: url('data:image/svg+xml;charset=US-ASCII,<svg width=\'24\' height=\'24\' xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'currentColor\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'/></svg>')"
-    required>
-    <option value="" class="py-2">Pilih Siswa</option>
-    <?php
-    $siswa_result = $conn->query("SELECT * FROM data_siswa");
-    while ($row = $siswa_result->fetch_assoc()):
-        echo "<option value='" . $row['id'] . "' class='py-2'>" . $row['nama'] . "</option>";
-    endwhile;
-    ?>
-</select>
-                        <select name="mata_pelajaran" class="form-select w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700" required>
-                           <option value="">Pilih Mata Pelajaran</option>
-                           <option value="Matematika">Matematika</option>
-                           <option value="Bahasa Indonesia">Bahasa Indonesia</option>
-                           <option value="IPA">IPA</option>
-                           <option value="IPS">IPS</option>
-                           <option value="Bahasa Inggris">Bahasa Inggris</option>
-                        </select>
-                        <select name="status" class="form-select w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-indigo-500" required>
-                            <option value="">Pilih Status</option>
-                            <option value="Hadir">Hadir</option>
-                            <option value="Sakit">Sakit</option>
-                            <option value="Terlambat">Terlambat</option>
-                            <option value="Alpha">Alpha</option>
-                        </select>
+                <form method="POST" action="" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Enhanced Select Fields -->
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Pilih Siswa
+                            </label>
+                            <div class="relative">
+                                <select name="siswa_id" required 
+                                        class="form-select w-full p-2.5 rounded-lg border border-gray-300 
+                                               dark:border-gray-600 bg-white dark:bg-gray-700">
+                                    <option value="">Pilih Siswa</option>
+                                    <?php
+                                    $siswa_result = $conn->query("SELECT * FROM data_siswa");
+                                    while ($row = $siswa_result->fetch_assoc()):
+                                        echo "<option value='" . $row['id'] . "' class='py-2'>" . $row['nama'] . "</option>";
+                                    endwhile;
+                                    ?>
+                                </select>
+                                <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                    <i class="fas fa-chevron-down text-gray-400"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Pilih Mata Pelajaran
+                            </label>
+                            <div class="relative">
+                                <select name="mata_pelajaran" required 
+                                        class="form-select w-full p-2.5 rounded-lg border border-gray-300 
+                                               dark:border-gray-600 bg-white dark:bg-gray-700">
+                                    <option value="">Pilih Mata Pelajaran</option>
+                                    <option value="Matematika">Matematika</option>
+                                    <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+                                    <option value="IPA">IPA</option>
+                                    <option value="IPS">IPS</option>
+                                    <option value="Bahasa Inggris">Bahasa Inggris</option>
+                                </select>
+                                <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                    <i class="fas fa-chevron-down text-gray-400"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Pilih Status
+                            </label>
+                            <div class="relative">
+                                <select name="status" required 
+                                        class="form-select w-full p-2.5 rounded-lg border border-gray-300 
+                                               dark:border-gray-600 bg-white dark:bg-gray-700">
+                                    <option value="">Pilih Status</option>
+                                    <option value="Hadir">Hadir</option>
+                                    <option value="Sakit">Sakit</option>
+                                    <option value="Terlambat">Terlambat</option>
+                                    <option value="Alpha">Alpha</option>
+                                </select>
+                                <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                    <i class="fas fa-chevron-down text-gray-400"></i>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <button type="submit" name="add_absensi" class="w-full md:w-auto px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors duration-200">
+                    <button type="submit" name="add_absensi" 
+                            class="btn-action bg-indigo-600 hover:bg-indigo-700 text-white
+                                   transform hover:scale-105 hover:shadow-lg">
+                        <i class="fas fa-plus-circle mr-2"></i>
                         Tambah Absensi
                     </button>
                 </form>
@@ -309,12 +501,31 @@ if (isset($_SESSION['notification'])) {
         <?php endif; ?>
 
         <!-- Tabel absensi -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-            <div class="p-6">
-                <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Data Absensi</h2>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden card-hover">
+            <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                <h2 class="text-xl font-semibold text-gray-800 dark:text-white flex items-center">
+                    <i class="fas fa-list mr-2 text-indigo-500"></i>
+                    Data Absensi
+                </h2>
             </div>
+
+            <!-- Add search and filter controls -->
+            <div class="p-4 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+                <div class="flex flex-wrap gap-4 items-center justify-between">
+                    <div class="relative">
+                        <input type="text" id="searchInput" 
+                               class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg 
+                                      focus:ring-2 focus:ring-indigo-500 focus:border-transparent
+                                      dark:bg-gray-800 dark:text-gray-300"
+                               placeholder="Cari...">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enhanced table styling -->
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead class="bg-gray-50 dark:bg-gray-700">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">No.</th>
@@ -331,7 +542,7 @@ if (isset($_SESSION['notification'])) {
                         if ($result->num_rows > 0):
                             $no = 1; // Nomor urut
                             while ($row = $result->fetch_assoc()): ?>
-                                <tr>
+                                <tr class="table-row">
                                     <td class="px-6 py-4 whitespace-nowrap text-gray-800 dark:text-gray-300"><?php echo $no++; ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-gray-800 dark:text-gray-300"><?php echo $row['nama']; ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap">
@@ -346,7 +557,7 @@ if (isset($_SESSION['notification'])) {
                                     <td class="px-6 py-4 whitespace-nowrap text-gray-800 dark:text-gray-300"><?php echo $row['tanggal']; ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap space-x-2">
                                         <!-- Modified delete link with modal trigger -->
-                                        <a href="?delete=<?php echo $row['id']; ?>" onclick="event.preventDefault(); showDeleteModal(this.href);" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                        <a href="?delete=<?php echo $row['id']; ?>" onclick="event.preventDefault(); showDeleteModal(this.href);" class="btn-action btn-delete">
                                             Hapus
                                         </a>
                                     </td>
@@ -365,7 +576,7 @@ if (isset($_SESSION['notification'])) {
 
     <!-- Modal Confirmation -->
     <div id="deleteModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-50">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-sm w-full p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-sm w-full p-6 modal-enter">
             <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-100">Konfirmasi Hapus</h3>
             <p class="mb-6 text-gray-600 dark:text-gray-300">Apakah Anda yakin ingin menghapus data ini?</p>
             <div class="flex justify-end space-x-4">

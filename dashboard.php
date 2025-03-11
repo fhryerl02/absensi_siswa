@@ -115,6 +115,61 @@ foreach ($statuses as $status) {
             border-radius: 0.5rem;
             padding: 1rem;
         }
+
+        /* Custom animations and effects */
+        .status-card {
+            transition: all 0.3s ease;
+        }
+        .status-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .chart-container {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .chart-container:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-table {
+            transition: all 0.3s ease;
+        }
+        .data-table:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Dark mode enhancements */
+        .dark .status-card {
+            background: linear-gradient(145deg, #2d3748, #1a202c);
+        }
+        
+        .dark .chart-container {
+            background: linear-gradient(145deg, #2d3748, #1a202c);
+        }
+
+        /* Loading animation */
+        .loading {
+            animation: shimmer 2s infinite linear;
+            background: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+            background-size: 1000px 100%;
+        }
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -230,22 +285,24 @@ foreach ($statuses as $status) {
                         <!-- Status Cards -->
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             <!-- Hadir -->
-                            <div class="bg-gradient-to-r from-green-400 to-green-500 rounded-lg p-4 text-white">
+                            <div class="status-card bg-gradient-to-br from-green-400 to-green-500 rounded-lg p-6 text-white relative overflow-hidden">
                                 <div class="flex justify-between items-center">
                                     <div>
-                                        <p class="text-sm opacity-80">Hadir</p>
-                                        <h3 class="text-2xl font-bold"><?php echo $status_counts['Hadir']; ?></h3>
+                                        <p class="text-sm opacity-80 mb-1">Hadir</p>
+                                        <h3 class="text-3xl font-bold"><?php echo $status_counts['Hadir']; ?></h3>
+                                        <p class="text-xs mt-2">Siswa hadir hari ini</p>
                                     </div>
-                                    <div class="bg-white/30 rounded-full p-2">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                        </svg>
+                                    <div class="stat-icon bg-white/30 rounded-full p-3">
+                                        <i class="fas fa-check-circle text-2xl"></i>
                                     </div>
+                                </div>
+                                <div class="absolute bottom-0 right-0 opacity-10 text-6xl">
+                                    <i class="fas fa-users"></i>
                                 </div>
                             </div>
 
                             <!-- Sakit -->
-                            <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-lg p-4 text-white">
+                            <div class="status-card bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-lg p-4 text-white">
                                 <div class="flex justify-between items-center">
                                     <div>
                                         <p class="text-sm opacity-80">Sakit</p>
@@ -260,7 +317,7 @@ foreach ($statuses as $status) {
                             </div>
 
                             <!-- Terlambat -->
-                            <div class="bg-gradient-to-r from-orange-400 to-orange-500 rounded-lg p-4 text-white">
+                            <div class="status-card bg-gradient-to-r from-orange-400 to-orange-500 rounded-lg p-4 text-white">
                                 <div class="flex justify-between items-center">
                                     <div>
                                         <p class="text-sm opacity-80">Terlambat</p>
@@ -275,7 +332,7 @@ foreach ($statuses as $status) {
                             </div>
 
                             <!-- Alpha -->
-                            <div class="bg-gradient-to-r from-red-400 to-red-500 rounded-lg p-4 text-white">
+                            <div class="status-card bg-gradient-to-r from-red-400 to-red-500 rounded-lg p-4 text-white">
                                 <div class="flex justify-between items-center">
                                     <div>
                                         <p class="text-sm opacity-80">Alpha</p>
@@ -291,17 +348,25 @@ foreach ($statuses as $status) {
                         </div>
 
                         <!-- Charts Section -->
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
                             <!-- Bar Chart -->
-                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-                                <h3 class="text-lg font-semibold mb-4 dark:text-gray-200">Statistik Kehadiran</h3>
+                            <div class="chart-container bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h3 class="text-lg font-semibold dark:text-gray-200">
+                                        <i class="fas fa-chart-bar mr-2"></i>Statistik Kehadiran
+                                    </h3>
+                                    <div class="flex space-x-2">
+                                        <button class="px-3 py-1 text-sm bg-indigo-100 text-indigo-600 rounded-full hover:bg-indigo-200 transition-colors" onclick="updateChartView('daily')">Hari ini</button>
+                                        <button class="px-3 py-1 text-sm bg-indigo-100 text-indigo-600 rounded-full hover:bg-indigo-200 transition-colors" onclick="updateChartView('weekly')">Minggu ini</button>
+                                    </div>
+                                </div>
                                 <div class="h-[300px] relative">
                                     <canvas id="barChart"></canvas>
                                 </div>
                             </div>
 
                             <!-- Line Chart -->
-                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+                            <div class="chart-container bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
                                 <h3 class="text-lg font-semibold mb-4 dark:text-gray-200">Trend Kehadiran</h3>
                                 <div class="h-[300px] relative">
                                     <canvas id="lineChart"></canvas>
@@ -309,80 +374,78 @@ foreach ($statuses as $status) {
                             </div>
                         </div>
 
-                        <!-- Statistics Section -->
+                        <!-- Quick Access Section -->
                         <div class="grid grid-cols-1 gap-6">
                             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
-                                <h3 class="text-lg font-semibold mb-4 dark:text-gray-200">Detail Statistik</h3>
+                                <h3 class="text-lg font-semibold mb-6 dark:text-gray-200">
+                                    <i class="fas fa-bolt mr-2"></i>Akses Cepat
+                                </h3>
                                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                    <div class="p-4 rounded-lg bg-green-100 dark:bg-green-900">
+                                    <!-- Quick Access Card - Data Siswa -->
+                                    <a href="siswa.php" class="p-4 rounded-lg bg-blue-100 dark:bg-blue-900 hover:transform hover:scale-105 transition-all duration-300">
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0">
-                                                <div class="p-3 bg-green-200 dark:bg-green-800 rounded-full">
-                                                    <svg class="w-6 h-6 text-green-700 dark:text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                                    </svg>
+                                                <div class="p-3 bg-blue-200 dark:bg-blue-800 rounded-full">
+                                                    <i class="fas fa-users text-blue-700 dark:text-blue-300"></i>
                                                 </div>
                                             </div>
                                             <div class="ml-3">
-                                                <p class="text-sm font-medium text-green-900 dark:text-green-200">Hadir</p>
-                                                <p class="text-2xl font-semibold text-green-900 dark:text-green-100"><?php echo $status_counts['Hadir']; ?></p>
+                                                <p class="text-sm font-medium text-blue-900 dark:text-blue-200">Data Siswa</p>
+                                                <p class="text-xs text-blue-800 dark:text-blue-300">Kelola data siswa</p>
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
 
-                                    <div class="p-4 rounded-lg bg-yellow-100 dark:bg-yellow-900">
+                                    <!-- Quick Access Card - Absensi -->
+                                    <a href="absensi.php" class="p-4 rounded-lg bg-purple-100 dark:bg-purple-900 hover:transform hover:scale-105 transition-all duration-300">
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0">
-                                                <div class="p-3 bg-yellow-200 dark:bg-yellow-800 rounded-full">
-                                                    <svg class="w-6 h-6 text-yellow-700 dark:text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                                    </svg>
+                                                <div class="p-3 bg-purple-200 dark:bg-purple-800 rounded-full">
+                                                    <i class="fas fa-clipboard-check text-purple-700 dark:text-purple-300"></i>
                                                 </div>
                                             </div>
                                             <div class="ml-3">
-                                                <p class="text-sm font-medium text-yellow-900 dark:text-yellow-200">Sakit</p>
-                                                <p class="text-2xl font-semibold text-yellow-900 dark:text-yellow-100"><?php echo $status_counts['Sakit']; ?></p>
+                                                <p class="text-sm font-medium text-purple-900 dark:text-purple-200">Absensi</p>
+                                                <p class="text-xs text-purple-800 dark:text-purple-300">Input absensi</p>
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
 
-                                    <div class="p-4 rounded-lg bg-orange-100 dark:bg-orange-900">
+                                    <!-- Quick Access Card - Jadwal -->
+                                    <a href="jadwal_pelajaran.php" class="p-4 rounded-lg bg-emerald-100 dark:bg-emerald-900 hover:transform hover:scale-105 transition-all duration-300">
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0">
-                                                <div class="p-3 bg-orange-200 dark:bg-orange-800 rounded-full">
-                                                    <svg class="w-6 h-6 text-orange-700 dark:text-orange-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                                    </svg>
+                                                <div class="p-3 bg-emerald-200 dark:bg-emerald-800 rounded-full">
+                                                    <i class="fas fa-calendar-alt text-emerald-700 dark:text-emerald-300"></i>
                                                 </div>
                                             </div>
                                             <div class="ml-3">
-                                                <p class="text-sm font-medium text-orange-900 dark:text-orange-200">Terlambat</p>
-                                                <p class="text-2xl font-semibold text-orange-900 dark:text-orange-100"><?php echo $status_counts['Terlambat']; ?></p>
+                                                <p class="text-sm font-medium text-emerald-900 dark:text-emerald-200">Jadwal</p>
+                                                <p class="text-xs text-emerald-800 dark:text-emerald-300">Lihat jadwal</p>
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
 
-                                    <div class="p-4 rounded-lg bg-red-100 dark:bg-red-900">
+                                    <!-- Quick Access Card - Laporan -->
+                                    <a href="#" class="p-4 rounded-lg bg-amber-100 dark:bg-amber-900 hover:transform hover:scale-105 transition-all duration-300">
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0">
-                                                <div class="p-3 bg-red-200 dark:bg-red-800 rounded-full">
-                                                    <svg class="w-6 h-6 text-red-700 dark:text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                                    </svg>
+                                                <div class="p-3 bg-amber-200 dark:bg-amber-800 rounded-full">
+                                                    <i class="fas fa-chart-line text-amber-700 dark:text-amber-300"></i>
                                                 </div>
                                             </div>
                                             <div class="ml-3">
-                                                <p class="text-sm font-medium text-red-900 dark:text-red-200">Alpha</p>
-                                                <p class="text-2xl font-semibold text-red-900 dark:text-red-100"><?php echo $status_counts['Alpha']; ?></p>
+                                                <p class="text-sm font-medium text-amber-900 dark:text-amber-200">Laporan</p>
+                                                <p class="text-xs text-amber-800 dark:text-amber-300">Lihat laporan</p>
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Data Table Section -->
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 data-table">
                             <h2 class="text-xl font-semibold mb-4">Siswa yang Sudah Absen Hari Ini</h2>
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
@@ -590,6 +653,60 @@ foreach ($statuses as $status) {
                 grid: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
             };
         }
+
+        // Enhanced chart animations
+        Chart.defaults.animation.duration = 2000;
+        Chart.defaults.animation.easing = 'easeInOutQuart';
+
+        // Add hover effects for chart elements
+        const chartHoverEffects = {
+            onHover: (event, elements) => {
+                event.native.target.style.cursor = elements.length ? 'pointer' : 'default';
+                if (elements.length) {
+                    elements[0].element.options.borderWidth = 2;
+                    elements[0].element.options.borderColor = '#4F46E5';
+                }
+            }
+        };
+
+        // Add these options to your charts configuration
+        const enhancedChartOptions = {
+            ...commonOptions,
+            plugins: {
+                ...commonOptions.plugins,
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleFont: { weight: 'bold' },
+                    padding: 12,
+                    cornerRadius: 8,
+                    usePointStyle: true
+                }
+            },
+            interaction: chartHoverEffects
+        };
+
+        // Add smooth scrolling for table
+        document.querySelector('.data-table').addEventListener('scroll', (e) => {
+            e.target.style.scrollBehavior = 'smooth';
+        });
+
+        // Add loading state simulation
+        function showLoading() {
+            document.querySelectorAll('.status-card, .chart-container').forEach(el => {
+                el.classList.add('loading');
+            });
+            setTimeout(() => {
+                document.querySelectorAll('.status-card, .chart-container').forEach(el => {
+                    el.classList.remove('loading');
+                });
+            }, 1000);
+        }
+
+        // Refresh data periodically
+        setInterval(() => {
+            showLoading();
+            // Add your data refresh logic here
+        }, 300000); // Refresh every 5 minutes
     </script>
 </body>
 </html>
